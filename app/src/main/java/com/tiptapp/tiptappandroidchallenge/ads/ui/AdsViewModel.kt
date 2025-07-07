@@ -3,13 +3,16 @@ package com.tiptapp.tiptappandroidchallenge.ads.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tiptapp.tiptappandroidchallenge.ads.data.AdsRepository
+import com.tiptapp.tiptappandroidchallenge.viewmodel.LocationViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class AdsViewModel(private val adsRepository: AdsRepository) : ViewModel() {
+class AdsViewModel(private val adsRepository: AdsRepository,
+                   private val locationViewModel: LocationViewModel
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow<AdsUiState>(AdsUiState.Loading)
     val uiState: StateFlow<AdsUiState> = _uiState.asStateFlow()
@@ -43,6 +46,23 @@ class AdsViewModel(private val adsRepository: AdsRepository) : ViewModel() {
                 newSelection.remove(adId)
             }
             newSelection
+        }
+    }
+
+    fun updateLocationTracking(uiState: AdsUiState, selectedIds: Set<String>) {
+        val isTracking = locationViewModel.isTrackingLocation.value
+        if (uiState is AdsUiState.Success) {
+            val selectedAds = uiState.ads.filter { it.id in selectedIds }
+            val tenMinutesInMillis = 10 * 60 * 1000
+            val shouldBeTracking = selectedAds.any {
+                (System.currentTimeMillis() - it.created) < tenMinutesInMillis
+            }
+
+            if (shouldBeTracking && !isTracking) {
+                locationViewModel.startLocationTracking()
+            } else if (!shouldBeTracking && isTracking) {
+                locationViewModel.stopLocationTracking()
+            }
         }
     }
 }
