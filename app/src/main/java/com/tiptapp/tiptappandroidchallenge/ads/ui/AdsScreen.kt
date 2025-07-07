@@ -4,6 +4,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationOn
@@ -44,18 +47,15 @@ fun AdsScreen(viewModel: AdsViewModel,
                 }
             }
             is AdsUiState.Success -> {
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(innerPadding)
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2), // The key change for a two-column grid
+                    modifier = Modifier.padding(innerPadding)
                 ) {
                     items(state.ads, key = { it.id }) { ad ->
                         AdItem(
                             ad = ad,
                             isSelected = ad.id in selectedIds,
-                            onSelectionChanged = {
-                                viewModel.toggleAdSelection(ad.id)
-                            }
+                            onSelectionChanged = { viewModel.toggleAdSelection(ad.id) }
                         )
                     }
                 }

@@ -16,6 +16,7 @@ moshiKotlin = "1.15.2"
 mockK = "1.14.4"
 truth = "1.4.4"
 turbine = "1.2.1"
+coil = "3.0.4"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -40,9 +41,11 @@ retrofit2-converter-moshi  = { group = "com.squareup.retrofit2", name = "convert
 moshi-kotlin  = { group = "com.squareup.moshi", name = "moshi-kotlin", version.ref = "moshiKotlin" }
 mockk  = { group = "io.mockk", name = "mockk", version.ref = "mockK" }
 mockk-android  = { group = "io.mockk", name = "mockk-android", version.ref = "mockK" }
-
 google-truth = { group = "com.google.truth", name = "truth", version.ref = "truth" }
 cashapp-turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
+coil-kt = { group = "io.coil-kt.coil3", name = "coil", version.ref = "coil" }
+coil-kt-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil" }
+coil-kt-network = { group = "io.coil-kt.coil3", name = "coil-network-okhttp", version.ref = "coil" }
 
 
 [plugins]
