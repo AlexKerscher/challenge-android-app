@@ -53,8 +53,8 @@ fun AdsScreen(viewModel: AdsViewModel,
                         AdItem(
                             ad = ad,
                             isSelected = ad.id in selectedIds,
-                            onSelectionChanged = { isSelected ->
-                                viewModel.onAdSelectionChanged(ad.id, isSelected)
+                            onSelectionChanged = {
+                                viewModel.toggleAdSelection(ad.id)
                             }
                         )
                     }

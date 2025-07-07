@@ -56,7 +56,7 @@ class AdsScreenTest {
         every { viewModel.uiState } returns uiStateFlow
         every { viewModel.selectedAdIds } returns selectedIdsFlow
         // We need to tell MockK what to do when this function is called
-        every { viewModel.onAdSelectionChanged(any(), any()) } returns Unit
+        every { viewModel.toggleAdSelection(any()) } returns Unit
 
         composeTestRule.setContent {
             TiptappAndroidChallengeTheme {
@@ -68,6 +68,6 @@ class AdsScreenTest {
         composeTestRule.onNodeWithText("Clickable Ad").performClick()
 
         // Assert
-        verify { viewModel.onAdSelectionChanged(ad.id, true) }
+        verify { viewModel.toggleAdSelection(ad.id) }
     }
 }

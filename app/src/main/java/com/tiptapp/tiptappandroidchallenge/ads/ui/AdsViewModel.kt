@@ -37,13 +37,13 @@ class AdsViewModel(private val adsRepository: AdsRepository,
         }
     }
 
-    fun onAdSelectionChanged(adId: String, isSelected: Boolean) {
+    fun toggleAdSelection(adId: String) {
         _selectedAdIds.update { currentSelection ->
             val newSelection = currentSelection.toMutableSet()
-            if (isSelected) {
-                newSelection.add(adId)
-            } else {
+            if (adId in newSelection) {
                 newSelection.remove(adId)
+            } else {
+                newSelection.add(adId)
             }
             newSelection
         }

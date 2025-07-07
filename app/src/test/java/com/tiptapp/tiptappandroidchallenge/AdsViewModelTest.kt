@@ -87,11 +87,11 @@ class AdsViewModelTest {
         viewModel.selectedAdIds.test {
             assertThat(awaitItem()).isEmpty()
 
-            viewModel.onAdSelectionChanged("ad1", true)
+            viewModel.toggleAdSelection("ad1")
             assertThat(awaitItem()).containsExactly("ad1")
-            viewModel.onAdSelectionChanged("ad2", true)
+            viewModel.toggleAdSelection("ad2")
             assertThat(awaitItem()).containsExactly("ad1", "ad2")
-            viewModel.onAdSelectionChanged("ad1", false)
+            viewModel.toggleAdSelection("ad1")
             assertThat(awaitItem()).containsExactly("ad2")
         }
     }
