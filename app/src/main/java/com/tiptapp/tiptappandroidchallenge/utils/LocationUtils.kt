@@ -27,23 +27,18 @@ object LocationUtils {
     }
 
     private fun hasLocationPermissions(context: Context): Boolean {
+        // We only need one of the foreground permissions to be granted.
         val fineLocation = ContextCompat.checkSelfPermission(
             context,
             Manifest.permission.ACCESS_FINE_LOCATION
         ) == PackageManager.PERMISSION_GRANTED
-        
+
         val coarseLocation = ContextCompat.checkSelfPermission(
             context,
             Manifest.permission.ACCESS_COARSE_LOCATION
         ) == PackageManager.PERMISSION_GRANTED
-        
-        val backgroundLocation =
-            ContextCompat.checkSelfPermission(
-                context,
-                Manifest.permission.ACCESS_BACKGROUND_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
 
-        return fineLocation && coarseLocation && backgroundLocation
+        return fineLocation || coarseLocation
     }
     
     private fun hasNotificationPermission(context: Context): Boolean {
@@ -90,23 +85,14 @@ object LocationUtils {
                 onPermissionsDenied()
             }
         }
-        
+
         val locationPermissionLauncher = rememberLauncherForActivityResult(
             ActivityResultContracts.RequestMultiplePermissions()
         ) { permissions ->
-            val allGranted = permissions.entries.all { it.value }
-            if (allGranted) {
-                if (ContextCompat.checkSelfPermission(
-                        activity,
-                        Manifest.permission.ACCESS_BACKGROUND_LOCATION
-                    ) != PackageManager.PERMISSION_GRANTED) {
-                    backgroundPermissionLauncher.launch(
-                        Manifest.permission.ACCESS_BACKGROUND_LOCATION
-                    )
-                } else {
-                    permissionsGranted = true
-                    onPermissionsGranted()
-                }
+            // Check if at least one of the permissions was granted
+            if (permissions.values.any { it }) {
+                permissionsGranted = true
+                onPermissionsGranted()
             } else {
                 permissionsGranted = false
                 onPermissionsDenied()
