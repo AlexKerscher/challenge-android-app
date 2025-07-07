@@ -81,6 +81,6 @@ Both can be run directly from Android Studio by right-clicking the respective di
 
 [Alex Kerscher]
 
-* **Email:** [kerscher.souza@gmail.com]
-* **LinkedIn:** [linkedin.com/in/alexandre-kerscher-2562b235]
-* **GitHub:** [github.com/AlexKerscher]
+* **Email:** [kerscher.souza@gmail.com](mailto:kerscher.souza@gmail.com)
+* **LinkedIn:** [linkedin.com/in/alexandre-kerscher-2562b235](https://www.linkedin.com/in/alexandre-kerscher-2562b235)
+* **GitHub:** [github.com/AlexKerscher](https://github.com/AlexKerscher)
