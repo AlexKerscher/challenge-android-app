@@ -16,7 +16,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.core.content.ContextCompat
-import com.tiptapp.tiptappandroidchallenge.service.LocationService
+import com.tiptapp.tiptappandroidchallenge.location.service.LocationTrackerService
 
 object LocationUtils {
 
@@ -27,23 +27,18 @@ object LocationUtils {
     }
 
     private fun hasLocationPermissions(context: Context): Boolean {
+        // We only need one of the foreground permissions to be granted.
         val fineLocation = ContextCompat.checkSelfPermission(
             context,
             Manifest.permission.ACCESS_FINE_LOCATION
         ) == PackageManager.PERMISSION_GRANTED
-        
+
         val coarseLocation = ContextCompat.checkSelfPermission(
             context,
             Manifest.permission.ACCESS_COARSE_LOCATION
         ) == PackageManager.PERMISSION_GRANTED
-        
-        val backgroundLocation =
-            ContextCompat.checkSelfPermission(
-                context,
-                Manifest.permission.ACCESS_BACKGROUND_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
 
-        return fineLocation && coarseLocation && backgroundLocation
+        return fineLocation || coarseLocation
     }
     
     private fun hasNotificationPermission(context: Context): Boolean {
@@ -58,15 +53,15 @@ object LocationUtils {
     }
     
     fun startLocationService(context: Context) {
-        val intent = Intent(context, LocationService::class.java).apply {
-            action = LocationService.ACTION_START_SERVICE
+        val intent = Intent(context, LocationTrackerService::class.java).apply {
+            action = LocationTrackerService.ACTION_START_SERVICE
         }
         context.startForegroundService(intent)
     }
     
     fun stopLocationService(context: Context) {
-        val intent = Intent(context, LocationService::class.java).apply {
-            action = LocationService.ACTION_STOP_SERVICE
+        val intent = Intent(context, LocationTrackerService::class.java).apply {
+            action = LocationTrackerService.ACTION_STOP_SERVICE
         }
         context.stopService(intent)
     }
@@ -90,23 +85,14 @@ object LocationUtils {
                 onPermissionsDenied()
             }
         }
-        
+
         val locationPermissionLauncher = rememberLauncherForActivityResult(
             ActivityResultContracts.RequestMultiplePermissions()
         ) { permissions ->
-            val allGranted = permissions.entries.all { it.value }
-            if (allGranted) {
-                if (ContextCompat.checkSelfPermission(
-                        activity,
-                        Manifest.permission.ACCESS_BACKGROUND_LOCATION
-                    ) != PackageManager.PERMISSION_GRANTED) {
-                    backgroundPermissionLauncher.launch(
-                        Manifest.permission.ACCESS_BACKGROUND_LOCATION
-                    )
-                } else {
-                    permissionsGranted = true
-                    onPermissionsGranted()
-                }
+            // Check if at least one of the permissions was granted
+            if (permissions.values.any { it }) {
+                permissionsGranted = true
+                onPermissionsGranted()
             } else {
                 permissionsGranted = false
                 onPermissionsDenied()
