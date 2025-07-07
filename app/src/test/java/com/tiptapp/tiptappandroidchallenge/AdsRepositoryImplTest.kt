@@ -3,6 +3,7 @@ package com.tiptapp.tiptappandroidchallenge
 import com.google.common.truth.Truth.assertThat
 import com.tiptapp.tiptappandroidchallenge.ads.data.AdsRepositoryImpl
 import com.tiptapp.tiptappandroidchallenge.ads.data.remote.Ad
+import com.tiptapp.tiptappandroidchallenge.ads.data.remote.AdLocation
 import com.tiptapp.tiptappandroidchallenge.ads.data.remote.AdResponse
 import com.tiptapp.tiptappandroidchallenge.ads.data.remote.TiptappApiService
 import io.mockk.coEvery
@@ -26,7 +27,7 @@ class AdsRepositoryImplTest {
     @Test
     fun `getAds returns success when api call is successful`() = runTest {
         // Arrange: Define what the mock service should return
-        val expectedAds = listOf(Ad("1", "Test Ad", 12345L))
+        val expectedAds = listOf(Ad("1", "Ad 1 Title", 1L, "thumb", 100, "SEK", 1, AdLocation(listOf(0.0, 0.0))))
         val adResponse = AdResponse(items = expectedAds)
         coEvery { apiService.getAds() } returns adResponse
 

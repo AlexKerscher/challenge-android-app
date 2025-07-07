@@ -5,9 +5,11 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import com.tiptapp.tiptappandroidchallenge.ads.data.remote.Ad
+import com.tiptapp.tiptappandroidchallenge.ads.data.remote.AdLocation
 import com.tiptapp.tiptappandroidchallenge.ads.ui.AdsScreen
 import com.tiptapp.tiptappandroidchallenge.ads.ui.AdsUiState
 import com.tiptapp.tiptappandroidchallenge.ads.ui.AdsViewModel
+import com.tiptapp.tiptappandroidchallenge.ads.ui.DisplayAd
 import com.tiptapp.tiptappandroidchallenge.ui.theme.TiptappAndroidChallengeTheme
 import io.mockk.every
 import io.mockk.mockk
@@ -25,14 +27,13 @@ class AdsScreenTest {
 
     @Test
     fun whenStateIsSuccess_displaysAdList() {
-        // Arrange: Create stable StateFlows for the test
-        val ads = listOf(Ad("1", "Ad 1 Title", 1L), Ad("2", "Ad 2 Title", 2L))
-        val uiStateFlow = MutableStateFlow<AdsUiState>(AdsUiState.Success(ads))
-        val selectedIdsFlow = MutableStateFlow<Set<String>>(emptySet())
+        // Arrange
+        val ad = Ad("1", "Ad 1 Title", 1L, "thumb", 100, "SEK", 1, AdLocation(listOf(0.0, 0.0)))
+        val displayAds = listOf(DisplayAd(ad = ad, distanceInKm = 5.5f))
+        val successState = AdsUiState.Success(displayAds)
 
-        // Use `every` to return the stable StateFlow instance
-        every { viewModel.uiState } returns uiStateFlow
-        every { viewModel.selectedAdIds } returns selectedIdsFlow
+        every { viewModel.uiState } returns MutableStateFlow(successState)
+        every { viewModel.selectedAdIds } returns MutableStateFlow(emptySet())
 
         // Act
         composeTestRule.setContent {
@@ -43,31 +44,28 @@ class AdsScreenTest {
 
         // Assert
         composeTestRule.onNodeWithText("Ad 1 Title").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Ad 2 Title").assertIsDisplayed()
     }
 
     @Test
-    fun whenAdIsClicked_viewModelIsNotified() {
+    fun whenAdIsClicked_viewModelToggleIsCalled() {
         // Arrange
-        val ad = Ad("1", "Clickable Ad", 1L)
-        val uiStateFlow = MutableStateFlow<AdsUiState>(AdsUiState.Success(listOf(ad)))
-        val selectedIdsFlow = MutableStateFlow<Set<String>>(emptySet())
+        val ad = Ad("1", "Clickable Ad", 1L, "thumb", 100, "SEK", 1, AdLocation(listOf(0.0, 0.0)))
+        val displayAd = DisplayAd(ad = ad, distanceInKm = null)
+        val successState = AdsUiState.Success(listOf(displayAd))
 
-        every { viewModel.uiState } returns uiStateFlow
-        every { viewModel.selectedAdIds } returns selectedIdsFlow
-        // We need to tell MockK what to do when this function is called
+        every { viewModel.uiState } returns MutableStateFlow(successState)
+        every { viewModel.selectedAdIds } returns MutableStateFlow(emptySet())
         every { viewModel.toggleAdSelection(any()) } returns Unit
 
+        // Act
         composeTestRule.setContent {
             TiptappAndroidChallengeTheme {
                 AdsScreen(viewModel = viewModel, onNavigateToTracker = {})
             }
         }
 
-        // Act
-        composeTestRule.onNodeWithText("Clickable Ad").performClick()
-
         // Assert
+        composeTestRule.onNodeWithText("Clickable Ad").performClick()
         verify { viewModel.toggleAdSelection(ad.id) }
     }
 }
