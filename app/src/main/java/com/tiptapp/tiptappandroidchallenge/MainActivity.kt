@@ -53,6 +53,7 @@ class MainActivity : ComponentActivity() {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     LocationPermissionHandler(
                         activity = this,
+                        viewModel = locationTrackerViewModel,
                         content = {
                             NavHost(
                                 navController = navController,

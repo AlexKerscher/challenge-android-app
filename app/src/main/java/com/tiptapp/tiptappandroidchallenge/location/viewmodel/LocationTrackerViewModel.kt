@@ -26,7 +26,7 @@ class LocationTrackerViewModel(application: Application) : AndroidViewModel(appl
     val currentLocation: StateFlow<Pair<Double, Double>?> = _currentLocation.asStateFlow()
 
     private val fusedLocationClient = LocationServices.getFusedLocationProviderClient(application)
-    
+
     private val locationReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             if (intent.action == LocationTrackerService.ACTION_LOCATION_UPDATED) {
@@ -39,7 +39,6 @@ class LocationTrackerViewModel(application: Application) : AndroidViewModel(appl
 
     init {
         registerLocationReceiver()
-        requestInitialLocation()
     }
     
     private fun registerLocationReceiver() {
@@ -60,7 +59,7 @@ class LocationTrackerViewModel(application: Application) : AndroidViewModel(appl
         }
     }
 
-    private fun requestInitialLocation() {
+    fun requestInitialLocation() {
         // This requires location permission, which our UI already handles.
         // The try/catch is for the SecurityException if permissions are somehow lost.
         try {

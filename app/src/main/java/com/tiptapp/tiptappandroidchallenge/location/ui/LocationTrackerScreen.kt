@@ -102,6 +102,7 @@ fun LocationTrackerScreen(
 @Composable
 fun LocationPermissionHandler(
     activity: ComponentActivity,
+    viewModel: LocationTrackerViewModel,
     content: @Composable () -> Unit
 ) {
     var permissionsGranted by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
@@ -109,6 +110,7 @@ fun LocationPermissionHandler(
     LocationUtils.RequestLocationPermissions(
         activity = activity,
         onPermissionsGranted = {
+            viewModel.requestInitialLocation()
             permissionsGranted = true
         },
         onPermissionsDenied = {
