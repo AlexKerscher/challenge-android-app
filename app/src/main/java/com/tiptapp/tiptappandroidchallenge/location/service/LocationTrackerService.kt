@@ -1,4 +1,4 @@
-package com.tiptapp.tiptappandroidchallenge.service
+package com.tiptapp.tiptappandroidchallenge.location.service
 
 import android.app.Notification
 import android.app.NotificationChannel
@@ -8,7 +8,6 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.location.Location
-import android.os.Build
 import android.os.IBinder
 import android.os.Looper
 import android.util.Log
@@ -22,7 +21,7 @@ import com.google.android.gms.location.Priority
 import com.tiptapp.tiptappandroidchallenge.MainActivity
 import com.tiptapp.tiptappandroidchallenge.R
 
-class LocationService : Service() {
+class LocationTrackerService : Service() {
 
     private val TAG = "LocationService"
     private val CHANNEL_ID = "location_service_channel"

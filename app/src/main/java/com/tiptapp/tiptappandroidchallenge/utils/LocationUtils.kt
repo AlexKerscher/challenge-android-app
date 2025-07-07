@@ -16,7 +16,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.core.content.ContextCompat
-import com.tiptapp.tiptappandroidchallenge.service.LocationService
+import com.tiptapp.tiptappandroidchallenge.location.service.LocationTrackerService
 
 object LocationUtils {
 
@@ -58,15 +58,15 @@ object LocationUtils {
     }
     
     fun startLocationService(context: Context) {
-        val intent = Intent(context, LocationService::class.java).apply {
-            action = LocationService.ACTION_START_SERVICE
+        val intent = Intent(context, LocationTrackerService::class.java).apply {
+            action = LocationTrackerService.ACTION_START_SERVICE
         }
         context.startForegroundService(intent)
     }
     
     fun stopLocationService(context: Context) {
-        val intent = Intent(context, LocationService::class.java).apply {
-            action = LocationService.ACTION_STOP_SERVICE
+        val intent = Intent(context, LocationTrackerService::class.java).apply {
+            action = LocationTrackerService.ACTION_STOP_SERVICE
         }
         context.stopService(intent)
     }

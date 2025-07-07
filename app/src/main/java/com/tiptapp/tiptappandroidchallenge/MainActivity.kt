@@ -24,17 +24,17 @@ import com.tiptapp.tiptappandroidchallenge.ads.ui.AdsViewModelFactory
 import com.tiptapp.tiptappandroidchallenge.location.ui.LocationPermissionHandler
 import com.tiptapp.tiptappandroidchallenge.location.ui.LocationTrackerScreen
 import com.tiptapp.tiptappandroidchallenge.ui.theme.TiptappAndroidChallengeTheme
-import com.tiptapp.tiptappandroidchallenge.viewmodel.LocationViewModel
+import com.tiptapp.tiptappandroidchallenge.location.viewmodel.LocationTrackerViewModel
 
 class MainActivity : ComponentActivity() {
 
-    private val locationViewModel: LocationViewModel by viewModels {
-        viewModelFactory { initializer { LocationViewModel(application) } }
+    private val locationTrackerViewModel: LocationTrackerViewModel by viewModels {
+        viewModelFactory { initializer { LocationTrackerViewModel(application) } }
     }
 
     private val adsRepository by lazy { AdsRepositoryImpl(RetrofitInstance.api) }
     private val adsViewModel: AdsViewModel by viewModels {
-        AdsViewModelFactory(adsRepository, locationViewModel)
+        AdsViewModelFactory(adsRepository, locationTrackerViewModel)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,7 +68,7 @@ class MainActivity : ComponentActivity() {
                                     )
                                 }
                                 composable("tracker_screen") {
-                                    LocationTrackerScreen(viewModel = locationViewModel)
+                                    LocationTrackerScreen(viewModel = locationTrackerViewModel)
                                 }
                             }
                         }

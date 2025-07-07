@@ -4,7 +4,7 @@ import android.location.Location
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tiptapp.tiptappandroidchallenge.ads.data.AdsRepository
-import com.tiptapp.tiptappandroidchallenge.viewmodel.LocationViewModel
+import com.tiptapp.tiptappandroidchallenge.location.viewmodel.LocationTrackerViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -15,12 +15,12 @@ import kotlinx.coroutines.flow.update
 
 class AdsViewModel(
     adsRepository: AdsRepository,
-    private val locationViewModel: LocationViewModel,
+    private val locationTrackerViewModel: LocationTrackerViewModel,
 ) : ViewModel() {
 
     val uiState: StateFlow<AdsUiState> = combine(
         adsRepository.getAdsAsFlow(),
-        locationViewModel.currentLocation // Use the location flow here
+        locationTrackerViewModel.currentLocation // Use the location flow here
     ) { adsResult, location ->
         adsResult.fold(
             onSuccess = { ads ->
@@ -71,7 +71,7 @@ class AdsViewModel(
     fun updateLocationTracking() {
         val uiStateValue = uiState.value
         val selectedIds = selectedAdIds.value
-        val isTracking = locationViewModel.isTrackingLocation.value
+        val isTracking = locationTrackerViewModel.isTrackingLocation.value
 
         if (uiStateValue is AdsUiState.Success) {
             val selectedAds = uiStateValue.ads
@@ -84,9 +84,9 @@ class AdsViewModel(
             }
 
             if (shouldBeTracking && !isTracking) {
-                locationViewModel.startLocationTracking()
+                locationTrackerViewModel.startLocationTracking()
             } else if (!shouldBeTracking && isTracking) {
-                locationViewModel.stopLocationTracking()
+                locationTrackerViewModel.stopLocationTracking()
             }
         }
     }

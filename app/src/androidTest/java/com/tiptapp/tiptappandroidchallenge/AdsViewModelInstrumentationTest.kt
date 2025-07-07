@@ -5,7 +5,7 @@ import com.tiptapp.tiptappandroidchallenge.ads.data.AdsRepository
 import com.tiptapp.tiptappandroidchallenge.ads.data.remote.Ad
 import com.tiptapp.tiptappandroidchallenge.ads.data.remote.AdLocation
 import com.tiptapp.tiptappandroidchallenge.ads.ui.AdsViewModel
-import com.tiptapp.tiptappandroidchallenge.viewmodel.LocationViewModel
+import com.tiptapp.tiptappandroidchallenge.location.viewmodel.LocationTrackerViewModel
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -25,7 +25,7 @@ class AdsViewModelInstrumentationTest {
 
     private lateinit var viewModel: AdsViewModel
     private val repository: AdsRepository = mockk()
-    private val locationViewModel: LocationViewModel = mockk(relaxed = true)
+    private val locationTrackerViewModel: LocationTrackerViewModel = mockk(relaxed = true)
 
     private val testDispatcher = StandardTestDispatcher()
 
@@ -44,18 +44,18 @@ class AdsViewModelInstrumentationTest {
         // Arrange
         val recentAd = Ad("1", "Recent", System.currentTimeMillis(), "t", 1, "c", 1, AdLocation(listOf(10.0, 10.0)))
         every { repository.getAdsAsFlow() } returns flowOf(Result.success(listOf(recentAd)))
-        every { locationViewModel.currentLocation } returns MutableStateFlow(Pair(1.0, 1.0))
-        every { locationViewModel.isTrackingLocation } returns MutableStateFlow(false)
-        every { locationViewModel.startLocationTracking() } returns Unit // Important for relaxed=false mocks
+        every { locationTrackerViewModel.currentLocation } returns MutableStateFlow(Pair(1.0, 1.0))
+        every { locationTrackerViewModel.isTrackingLocation } returns MutableStateFlow(false)
+        every { locationTrackerViewModel.startLocationTracking() } returns Unit // Important for relaxed=false mocks
 
         // Act
-        viewModel = AdsViewModel(repository, locationViewModel)
+        viewModel = AdsViewModel(repository, locationTrackerViewModel)
         viewModel.toggleAdSelection("1")
         testDispatcher.scheduler.advanceUntilIdle() // Let the combine operator run
         viewModel.updateLocationTracking()
 
         // Assert
-        verify(exactly = 1) { locationViewModel.startLocationTracking() }
+        verify(exactly = 1) { locationTrackerViewModel.startLocationTracking() }
     }
 
     @Test
@@ -63,10 +63,10 @@ class AdsViewModelInstrumentationTest {
         // Arrange
         val recentAd = Ad("1", "Recent", System.currentTimeMillis(), "t", 1, "c", 1, AdLocation(listOf(10.0, 10.0)))
         every { repository.getAdsAsFlow() } returns flowOf(Result.success(listOf(recentAd)))
-        every { locationViewModel.currentLocation } returns MutableStateFlow(Pair(1.0, 1.0))
-        every { locationViewModel.isTrackingLocation } returns MutableStateFlow(true)
-        every { locationViewModel.stopLocationTracking() } returns Unit // Important
-        viewModel = AdsViewModel(repository, locationViewModel)
+        every { locationTrackerViewModel.currentLocation } returns MutableStateFlow(Pair(1.0, 1.0))
+        every { locationTrackerViewModel.isTrackingLocation } returns MutableStateFlow(true)
+        every { locationTrackerViewModel.stopLocationTracking() } returns Unit // Important
+        viewModel = AdsViewModel(repository, locationTrackerViewModel)
         viewModel.toggleAdSelection("1")
         testDispatcher.scheduler.advanceUntilIdle()
 
@@ -76,6 +76,6 @@ class AdsViewModelInstrumentationTest {
         viewModel.updateLocationTracking()
 
         // Assert
-        verify(exactly = 1) { locationViewModel.stopLocationTracking() }
+        verify(exactly = 1) { locationTrackerViewModel.stopLocationTracking() }
     }
 }

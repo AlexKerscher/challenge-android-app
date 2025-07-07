@@ -23,11 +23,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.tiptapp.tiptappandroidchallenge.ui.theme.TiptappAndroidChallengeTheme
 import com.tiptapp.tiptappandroidchallenge.utils.LocationUtils
-import com.tiptapp.tiptappandroidchallenge.viewmodel.LocationViewModel
+import com.tiptapp.tiptappandroidchallenge.location.viewmodel.LocationTrackerViewModel
 
 @Composable
 fun LocationTrackerScreen(
-    viewModel: LocationViewModel,
+    viewModel: LocationTrackerViewModel,
     modifier: Modifier = Modifier
 ) {
     val isTracking by viewModel.isTrackingLocation.collectAsState()

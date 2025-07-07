@@ -8,7 +8,7 @@ import com.tiptapp.tiptappandroidchallenge.ads.data.remote.Ad
 import com.tiptapp.tiptappandroidchallenge.ads.data.remote.AdLocation
 import com.tiptapp.tiptappandroidchallenge.ads.ui.AdsUiState
 import com.tiptapp.tiptappandroidchallenge.ads.ui.AdsViewModel
-import com.tiptapp.tiptappandroidchallenge.viewmodel.LocationViewModel
+import com.tiptapp.tiptappandroidchallenge.location.viewmodel.LocationTrackerViewModel
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
@@ -31,7 +31,7 @@ class AdsViewModelTest {
 
     private lateinit var viewModel: AdsViewModel
     private val repository: AdsRepository = mockk()
-    private val locationViewModel: LocationViewModel = mockk(relaxed = true)
+    private val locationTrackerViewModel: LocationTrackerViewModel = mockk(relaxed = true)
 
     private val testDispatcher = StandardTestDispatcher()
 
@@ -55,9 +55,9 @@ class AdsViewModelTest {
         // Arrange
         val ads = listOf(Ad("1", "Test Ad", 1L, "thumb", 100, "SEK", 1, AdLocation(listOf(0.0, 0.0))))
         every { repository.getAdsAsFlow() } returns flowOf(Result.success(ads))
-        every { locationViewModel.currentLocation } returns MutableStateFlow(null)
+        every { locationTrackerViewModel.currentLocation } returns MutableStateFlow(null)
         // Act
-        viewModel = AdsViewModel(repository, locationViewModel)
+        viewModel = AdsViewModel(repository, locationTrackerViewModel)
         // Assert
         viewModel.uiState.test {
             assertThat(awaitItem()).isInstanceOf(AdsUiState.Loading::class.java)
@@ -72,9 +72,9 @@ class AdsViewModelTest {
         // Arrange
         val errorMessage = "Network error"
         every { repository.getAdsAsFlow() } returns flowOf(Result.failure(IOException(errorMessage)))
-        every { locationViewModel.currentLocation } returns MutableStateFlow(null)
+        every { locationTrackerViewModel.currentLocation } returns MutableStateFlow(null)
         // Act
-        viewModel = AdsViewModel(repository, locationViewModel)
+        viewModel = AdsViewModel(repository, locationTrackerViewModel)
         // Assert
         viewModel.uiState.test {
             assertThat(awaitItem()).isInstanceOf(AdsUiState.Loading::class.java)
@@ -87,8 +87,8 @@ class AdsViewModelTest {
     fun `toggleAdSelection correctly updates selectedAdIds`() = runTest {
         // Arrange
         every { repository.getAdsAsFlow() } returns flowOf(Result.success(emptyList()))
-        every { locationViewModel.currentLocation } returns MutableStateFlow(null)
-        viewModel = AdsViewModel(repository, locationViewModel)
+        every { locationTrackerViewModel.currentLocation } returns MutableStateFlow(null)
+        viewModel = AdsViewModel(repository, locationTrackerViewModel)
 
         // Act & Assert
         viewModel.selectedAdIds.test {

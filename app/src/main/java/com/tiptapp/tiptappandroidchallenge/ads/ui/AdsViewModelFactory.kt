@@ -3,18 +3,17 @@ package com.tiptapp.tiptappandroidchallenge.ads.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tiptapp.tiptappandroidchallenge.ads.data.AdsRepository
-import com.tiptapp.tiptappandroidchallenge.viewmodel.LocationViewModel
-import kotlinx.coroutines.flow.StateFlow
+import com.tiptapp.tiptappandroidchallenge.location.viewmodel.LocationTrackerViewModel
 
 class AdsViewModelFactory(
     private val adsRepository: AdsRepository,
-    private val locationViewModel: LocationViewModel,
+    private val locationTrackerViewModel: LocationTrackerViewModel,
 ) : ViewModelProvider.Factory {
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(AdsViewModel::class.java)) {
-            return AdsViewModel(adsRepository, locationViewModel) as T
+            return AdsViewModel(adsRepository, locationTrackerViewModel) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

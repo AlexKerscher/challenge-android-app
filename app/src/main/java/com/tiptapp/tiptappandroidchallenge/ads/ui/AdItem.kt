@@ -101,7 +101,7 @@ fun AdItem(
                     Text(
                         text = "${displayAd.ad.pay} ${displayAd.ad.ccy}",
                         color = Color.White,
-                        style = MaterialTheme.typography.bodyMedium,
+                        style = MaterialTheme.typography.bodySmall,
                         fontWeight = FontWeight.Bold
                     )
 
@@ -111,7 +111,7 @@ fun AdItem(
                         Text(
                             text = "%.1f km".format(distance),
                             color = Color.White,
-                            style = MaterialTheme.typography.bodyMedium
+                            style = MaterialTheme.typography.bodySmall
                         )
                     }
                 }
