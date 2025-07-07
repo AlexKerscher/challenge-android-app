@@ -44,11 +44,10 @@ class MainActivity : ComponentActivity() {
             TiptappAndroidChallengeTheme {
                 val navController = rememberNavController()
 
-                val adUiState by adsViewModel.uiState.collectAsStateWithLifecycle()
                 val selectedAdIds by adsViewModel.selectedAdIds.collectAsStateWithLifecycle()
 
-                LaunchedEffect(adUiState, selectedAdIds) {
-                    adsViewModel.updateLocationTracking(adUiState, selectedAdIds)
+                LaunchedEffect(selectedAdIds) {
+                    adsViewModel.updateLocationTracking()
                 }
 
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->

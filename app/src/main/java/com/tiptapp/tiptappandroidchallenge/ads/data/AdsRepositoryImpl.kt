@@ -3,6 +3,8 @@ package com.tiptapp.tiptappandroidchallenge.ads.data
 import com.tiptapp.tiptappandroidchallenge.ads.data.remote.Ad
 import com.tiptapp.tiptappandroidchallenge.ads.data.remote.TiptappApiService
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
 
 /**
@@ -25,5 +27,9 @@ class AdsRepositoryImpl(
                 Result.failure(e)
             }
         }
+    }
+
+    override fun getAdsAsFlow(): Flow<Result<List<Ad>>> = flow {
+        emit(getAds())
     }
 }

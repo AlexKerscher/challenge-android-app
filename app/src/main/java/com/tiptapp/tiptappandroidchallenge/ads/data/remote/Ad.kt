@@ -14,9 +14,17 @@ data class AdResponse(
  * Only contains the fields required by the coding challenge.
  */
 data class Ad(
-    @Json(name = "_id") // Maps the JSON "_id" field to our "id" property
+    @Json(name = "_id")
     val id: String,
     val title: String,
+    val created: Long,
     val thumbnail: String,
-    val created: Long // The API sends this as a Long (Unix timestamp)
+    val pay: Long,
+    val ccy: String,
+    val type: Long,
+    val from: AdLocation
+)
+
+data class AdLocation(
+    val loc: List<Double>
 )

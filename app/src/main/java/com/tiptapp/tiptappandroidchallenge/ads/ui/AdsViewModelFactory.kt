@@ -4,10 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tiptapp.tiptappandroidchallenge.ads.data.AdsRepository
 import com.tiptapp.tiptappandroidchallenge.viewmodel.LocationViewModel
+import kotlinx.coroutines.flow.StateFlow
 
 class AdsViewModelFactory(
     private val adsRepository: AdsRepository,
-    private val locationViewModel: LocationViewModel
+    private val locationViewModel: LocationViewModel,
 ) : ViewModelProvider.Factory {
 
     @Suppress("UNCHECKED_CAST")
