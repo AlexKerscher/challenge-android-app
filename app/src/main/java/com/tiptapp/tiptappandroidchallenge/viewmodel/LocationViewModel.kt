@@ -65,12 +65,12 @@ class LocationViewModel(application: Application) : AndroidViewModel(application
         }
     }
     
-    private fun startLocationTracking() {
+    fun startLocationTracking() {
         LocationUtils.startLocationService(getApplication())
         _isTrackingLocation.value = true
     }
     
-    private fun stopLocationTracking() {
+    fun stopLocationTracking() {
         LocationUtils.stopLocationService(getApplication())
         _isTrackingLocation.value = false
     }

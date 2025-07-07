@@ -1,5 +1,4 @@
 package com.tiptapp.tiptappandroidchallenge
-
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -8,7 +7,11 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.navigation.compose.NavHost
@@ -17,6 +20,7 @@ import androidx.navigation.compose.rememberNavController
 import com.tiptapp.tiptappandroidchallenge.ads.data.AdsRepositoryImpl
 import com.tiptapp.tiptappandroidchallenge.ads.data.remote.RetrofitInstance
 import com.tiptapp.tiptappandroidchallenge.ads.ui.AdsScreen
+import com.tiptapp.tiptappandroidchallenge.ads.ui.AdsUiState
 import com.tiptapp.tiptappandroidchallenge.ads.ui.AdsViewModel
 import com.tiptapp.tiptappandroidchallenge.ads.ui.AdsViewModelFactory
 import com.tiptapp.tiptappandroidchallenge.location.ui.LocationPermissionHandler
@@ -26,12 +30,10 @@ import com.tiptapp.tiptappandroidchallenge.viewmodel.LocationViewModel
 
 class MainActivity : ComponentActivity() {
 
-    // Existing LocationViewModel
     private val locationViewModel: LocationViewModel by viewModels {
         viewModelFactory { initializer { LocationViewModel(application) } }
     }
 
-    // Our new AdsViewModel and its dependencies
     private val adsRepository by lazy { AdsRepositoryImpl(RetrofitInstance.api) }
     private val adsViewModel: AdsViewModel by viewModels { AdsViewModelFactory(adsRepository) }
 
@@ -40,17 +42,37 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             TiptappAndroidChallengeTheme {
-                // This is the controller for our navigation graph
                 val navController = rememberNavController()
+
+                val adUiState by adsViewModel.uiState.collectAsStateWithLifecycle()
+                val selectedAdIds by adsViewModel.selectedAdIds.collectAsStateWithLifecycle()
+                val isTracking by locationViewModel.isTrackingLocation.collectAsState()
+
+                LaunchedEffect(adUiState, selectedAdIds) {
+                    val currentState = adUiState
+                    if (currentState is AdsUiState.Success) {
+                        val selectedAds = currentState.ads.filter { it.id in selectedAdIds }
+
+                        val tenMinutesInMillis = 10 * 60 * 1000
+                        val shouldBeTracking = selectedAds.any {
+                            (System.currentTimeMillis() - it.created) < tenMinutesInMillis
+                        }
+
+                        if (shouldBeTracking && !isTracking) {
+                            locationViewModel.startLocationTracking()
+                        } else if (!shouldBeTracking && isTracking) {
+                            locationViewModel.stopLocationTracking()
+                        }
+                    }
+                }
 
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     LocationPermissionHandler(
                         activity = this,
                         content = {
-                            // NavHost is where our screens will be swapped
                             NavHost(
                                 navController = navController,
-                                startDestination = "ads_screen", // Our new screen is the starting point
+                                startDestination = "ads_screen",
                                 modifier = Modifier.padding(innerPadding)
                             ) {
                                 composable("ads_screen") {

@@ -27,7 +27,6 @@ fun AdsScreen(viewModel: AdsViewModel,
 
     Scaffold(
         floatingActionButton = {
-            // This button now uses the callback to trigger navigation
             FloatingActionButton(onClick = onNavigateToTracker) {
                 Icon(Icons.Filled.LocationOn, contentDescription = "Go to Tracker")
             }
@@ -48,7 +47,7 @@ fun AdsScreen(viewModel: AdsViewModel,
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(innerPadding) // Apply the padding here
+                        .padding(innerPadding)
                 ) {
                     items(state.ads, key = { it.id }) { ad ->
                         AdItem(
